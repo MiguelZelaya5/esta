@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'interfaz_Entrada',
+    
 ]
 
 MIDDLEWARE = [
@@ -75,8 +77,12 @@ WSGI_APPLICATION = 'appEstacionamiento.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bsj8za17phmfqsrvpwa0',
+        'PASSWORD':'sSTxHUmyKvDRSBqKGARQ',
+        'USER': 'utserjj0yqleagyd',
+        'HOST': 'bsj8za17phmfqsrvpwa0-mysql.services.clever-cloud.com',
+        'PORT': '3306',
     }
 }
 
