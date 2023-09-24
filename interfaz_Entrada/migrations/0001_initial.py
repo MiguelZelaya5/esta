@@ -25,6 +25,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('idregistrovehiculos', models.AutoField(primary_key=True, serialize=False)),
                 ('Tipo_de_vehiculo', models.CharField(max_length=45)),
+                ('Matricula' ,models.CharField(max_length=45)),
                 ('fecha', models.DateField()),
                 ('Hora_de_entrada', models.TimeField()),
                 ('Hora_de_salida', models.TimeField()),
