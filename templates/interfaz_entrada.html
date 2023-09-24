@@ -15,6 +15,7 @@
 </head>
 
 <body>
+
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
         <div class="bg-white" id="sidebar-wrapper">
@@ -26,29 +27,29 @@
                     <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent second-text fw-bold" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-tachometer-alt me-2"></i>Entrada
                     </button>
-                    
-                  </div>                  
+
+                  </div>
                 <!-- Dropdown 2 -->
                 <div class="">
                     <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent second-text fw-bold" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-project-diagram me-2"></i>Salida
                     </button>
-                    
+
                   </div> 
-                
+
                 <!-- Dropdown 3 -->
                 <div class="">
                     <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent second-text fw-bold" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-chart-line me-2"></i>Historial
                     </button>
                 </div>
-        
+
                 <a href="#" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold">
                     <div class="">
                         <i class="fas fa-power-off me-2">Cerrar Sesión</i>
                     </div>
                 </a>
-            </div>            
+            </div>
         </div>
 
         <div id="page-content-wrapper">
@@ -94,13 +95,13 @@
                       <div class="container mt-5">
                         <div class="border p-3">
                             
-                                                      
+                            <p>Parqueos Disponibles: <span id="contador-parqueos">{{ totaldisponibles }}</span></p>                        
                         </div>
                     </div>
                     </div>
                   </div>
 
-                  <form method="post" action="{% url 'agregarRegistro' %}" >
+                  <form method="post" id="myForm" action="{% url 'agregarRegistro' %}" >
                   <div class="container mt-5">
                         
                             {% csrf_token %}
@@ -183,22 +184,45 @@
         window.onload = function () {
             establecerFechaYHoraActual();
         };
+        function actualizarContadorParqueos() {
+        // Realizar una solicitud AJAX al servidor para obtener el nuevo valor del contador
+        fetch('contador/')  // Cambia '/contador/' con la URL correcta de tu vista para obtener el contador
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el valor del contador en la página
+                document.getElementById('contador-parqueos').textContent = data.totaldisponibles;
+            })
+            .catch(error => console.error('Error al obtener el contador: ', error));
+    }
+
+    // Actualizar el contador cada 5 segundos (ajusta el intervalo según tus preferencias)
+    setInterval(actualizarContadorParqueos, 5000); 
         
         // Función para actualizar el contador de parqueos disponibles
-        function actualizarContadorParqueos() {
-            // Realizar una solicitud AJAX al servidor para obtener el nuevo valor del contador
-            fetch('/contador/')  // Cambia '/contador/' con la URL correcta de tu vista para obtener el contador
-                .then(response => response.json())
-                .then(data => {
-                    // Actualizar el valor del contador en la página
-                    document.getElementById('contador-parqueos').textContent = data.totaldisponibles;
-                })
-                .catch(error => console.error('Error al obtener el contador: ', error));
-        }
-    
-        // Actualizar el contador cada 5 segundos (ajusta el intervalo según tus preferencias)
-        setInterval(actualizarContadorParqueos, 3000);  // Actualiza cada 5 segundos
+       
         
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#myForm").submit(function(event) {
+                event.preventDefault(); // Evita la recarga de la página por defecto
+                var formData = $(this).serialize();
+    
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'agregarRegistro' %}",
+                    data: formData,
+                    success: function(response) {
+                        console.log("Formulario enviado exitosamente.");
+                        // Actualizar el contador después de enviar el formulario
+                        actualizarContadorParqueos();
+                    },
+                    error: function(error) {
+                        console.error("Error al enviar el formulario:", error);
+                    }
+                });
+            });
+        });
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -228,6 +252,15 @@
         }
     
         updateDate();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var el = document.getElementById("wrapper");
+        var toggleButton = document.getElementById("menu-toggle");
+
+        toggleButton.onclick = function () {
+            el.classList.toggle("toggled");
+        };
     </script>
     
     

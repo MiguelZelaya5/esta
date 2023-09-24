@@ -16,11 +16,14 @@ from django.http import JsonResponse
 ##@login_required
 def int_entrada(request):
     totaldisponibles = obtener_total_disponibles()
-    return render(request, 'interfaz_entrada.html')
+    return render(request, 'interfaz_entrada.html', {'totaldisponibles': totaldisponibles[0]})
 
 def salir(request):
     logout(request)
     return redirect('/')
+def obtener_contador(request):
+    totaldisponibles = obtener_total_disponibles()
+    return JsonResponse({'totaldisponibles': totaldisponibles[0]})
 
 
 def registrarvehiculo(request):
@@ -59,7 +62,7 @@ def registrarvehiculo(request):
         
             
 
-        return render(request, 'interfaz_entrada.html')
+        return redirect('int_entrada')
 
 
 def insertar_interfaz_Entrada_registrovehiculos(Tipo_de_vehiculo,Matricula,fecha,Hora_de_entrada,Hora_de_salida,Usuario,
