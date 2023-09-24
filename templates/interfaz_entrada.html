@@ -184,6 +184,21 @@
             establecerFechaYHoraActual();
         };
         
+        // Función para actualizar el contador de parqueos disponibles
+        function actualizarContadorParqueos() {
+            // Realizar una solicitud AJAX al servidor para obtener el nuevo valor del contador
+            fetch('/contador/')  // Cambia '/contador/' con la URL correcta de tu vista para obtener el contador
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizar el valor del contador en la página
+                    document.getElementById('contador-parqueos').textContent = data.totaldisponibles;
+                })
+                .catch(error => console.error('Error al obtener el contador: ', error));
+        }
+    
+        // Actualizar el contador cada 5 segundos (ajusta el intervalo según tus preferencias)
+        setInterval(actualizarContadorParqueos, 3000);  // Actualiza cada 5 segundos
+        
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>

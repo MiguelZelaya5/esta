@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'appEstacionamiento.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bpuqxauwe68dltltwole',
-        'PASSWORD':'sSTxHUmyKvDRSBqKGARQ',
-        'USER': 'utserjj0yqleagyd',
-        'HOST': 'bpuqxauwe68dltltwole-mysql.services.clever-cloud.com',
+        'NAME': 'bpbcgg0k3xozvnpjw2as',
+        'PASSWORD':'Bj84QqEV3eA0Pf6ciU0O',
+        'USER': 'u0bsqmkzmtcuahoq',
+        'HOST': 'bpbcgg0k3xozvnpjw2as-mysql.services.clever-cloud.com',
         'PORT': '3306',
     }
 }

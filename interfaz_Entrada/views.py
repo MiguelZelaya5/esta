@@ -35,28 +35,29 @@ def registrarvehiculo(request):
         Estado = 'A'
         Id_tabla_historial_value=request.POST['Id_tabla_historial']
 
-        parqueo_disponible = ParqueoDisponible.objects.first()
-        if parqueo_disponible.TotalParqueoDisponible > 0:
-            try:
-                with transaction.atomic():
-                    # Actualizar parqueos disponibles
-                    parqueo_disponible.TotalParqueoDisponible -= 1
-                    parqueo_disponible.save()
+        
                     
                     # Llama al método insertar_vehiculos para insertar los datos en la base de datos
-                    insertar_interfaz_Entrada_registrovehiculos(
-                        Tipo_de_vehiculo=Tipo_de_vehiculo,
-                        Matricula=Matricula,
-                        fecha=Fecha,
-                        Hora_de_entrada=Hora_de_entrada,
-                        Hora_de_salida=Hora_de_salidadefecto,
-                        Usuario=Usuario,
-                        Estado=Estado,
-                        Id_tabla_historial=Id_tabla_historial_value
+        insertar_interfaz_Entrada_registrovehiculos(
+            Tipo_de_vehiculo=Tipo_de_vehiculo,
+            Matricula=Matricula,
+            fecha=Fecha,
+            Hora_de_entrada=Hora_de_entrada,
+            Hora_de_salida=Hora_de_salidadefecto,
+            Usuario=Usuario,
+            Estado=Estado,
+            Id_tabla_historial=Id_tabla_historial_value
                     )
-            except Exception as e:
-                # Manejar cualquier error que pueda ocurrir durante la actualización de parqueos disponibles
-                return HttpResponse(f"Error al actualizar parqueos disponibles: {str(e)}")
+        try:
+            with transaction.atomic():
+                parqueo_disponible = ParqueoDisponible.objects.first()
+                parqueo_disponible.TotalParqueoDisponible -= 1
+                parqueo_disponible.save()
+        except Exception as e:
+            # Manejar cualquier error que pueda ocurrir durante la actualización de parqueos disponibles
+            return HttpResponse(f"Error al actualizar parqueos disponibles: {str(e)}")
+        
+            
 
         return render(request, 'interfaz_entrada.html')
 
