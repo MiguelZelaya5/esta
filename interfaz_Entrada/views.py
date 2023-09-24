@@ -16,15 +16,12 @@ from django.http import JsonResponse
 ##@login_required
 def int_entrada(request):
     totaldisponibles = obtener_total_disponibles()
-    return render(request, 'interfaz_entrada.html', {'totaldisponibles': totaldisponibles[0]})
+    return render(request, 'interfaz_entrada.html')
 
 def salir(request):
     logout(request)
     return redirect('/')
 
-def obtener_contador(request):
-    totaldisponibles = obtener_total_disponibles()
-    return JsonResponse({'totaldisponibles': totaldisponibles[0]})
 
 def registrarvehiculo(request):
     if request.method == 'POST':
