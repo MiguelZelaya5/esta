@@ -37,7 +37,12 @@ class EstadiaTotal(models.Model):
     def str(self):
         return str(self.idestadiatotal)
     
+class ParqueoDisponible(models.Model):
+    idParqueoDisponibel = models.AutoField(primary_key=True)
+    TotalParqueoDisponible = models.BigIntegerField()
 
+    def str(self):
+        return str(self.idParqueoDisponibel)
     
 
 
