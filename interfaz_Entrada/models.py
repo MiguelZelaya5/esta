@@ -28,6 +28,14 @@ class RegistroVehiculos(models.Model):
     def __str__(self):
         return f'RegistroVehiculos #{self.idregistrovehiculos}'
     
+class EstadiaTotal(models.Model):
+    idestadiatotal = models.AutoField(primary_key=True)
+    totalhoras = models.TimeField()
+    id_registro_vehiculo = models.ForeignKey(RegistroVehiculos, on_delete=models.CASCADE)
+
+    def str(self):
+        return str(self.idestadiatotal)
+    
 
     
 
