@@ -100,23 +100,23 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label for="matricula">Matricula:</label>
-                            <input type="text" class="form-control" id="nombre1" placeholder="" name="matricula">
+                            <input type="text" class="form-control" id="nombre1" placeholder="">
                         </div>
             
                         <div class="col-md-4">
                             <label for="tipoVehiculo">Tipo Vehiculo:</label>
-                            <select class="form-select" id="tipoVehiculo">
-                                <option value="carro">Carro</option>
-                                <option value="moto">Moto</option>
-                                <option value="Bicicleta">Bicicleta</option>
-                                <option value="Microbus">Microbus</option>
+                            <select class="form-select" id="tipoVehiculo" name="tipoVehiculo">
+                                <option value="carro" data-id="1">Carro</option>
+                                <option value="moto" data-id="2">Moto</option>
+                                <option value="Bicicleta" data-id="3">Bicicleta</option>
+                                <option value="Microbus" data-id="4">Microbus</option>
                                 <!-- Agrega más opciones según sea necesario -->
                             </select>
                         </div>
                         
                         <div class="col-md-4">
                             <label for="rol">Rol:</label>
-                            <select class="form-select" id="rol">
+                            <select class="form-select" id="rol" name="rol">
                                 <option value="Estudiante">Estudiante</option>
                                 <option value="Profesor">Profesor</option>
                                 <option value="Invitado">Invitado</option>
@@ -126,6 +126,11 @@
                                                 
                     </div>
                   </div>
+                  <input type="hidden" id="fechaActual" name="fechaActual">
+                  <input type="hidden" id="horaActual" name="horaActual">
+                  <input type="hidden" id="Id_tabla_historial" name="Id_tabla_historial">
+
+
                   <div class="text-center mt-3">
                     <button class="btn btn-secondary">Enviar</button>
                   </div>
@@ -144,5 +149,56 @@
             el.classList.toggle("toggled");
         };
     </script>
+    <script>
+        // Función para obtener la fecha actual y establecerla en el campo oculto
+        function establecerFechaActualEnCampoOculto() {
+            var fecha = new Date();
+            var fechaActual = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+            document.getElementById("fechaActual").value = fechaActual;
+        }
+    
+        // Llama a la función para establecer la fecha actual cuando la página se carga
+        window.onload = function () {
+            establecerFechaActualEnCampoOculto();
+        };
+    </script>
+    <script>
+        // Función para obtener la hora actual del cliente
+        function obtenerHoraActual() {
+            var fecha = new Date();
+            var hora = fecha.getHours();
+            var minutos = fecha.getMinutes();
+            var segundos = fecha.getSeconds();
+            
+            // Formatear la hora en el formato HH:MM:SS
+            var horaActual = hora + ":" + minutos + ":" + segundos;
+            
+            // Asignar la hora actual al campo oculto
+            document.getElementById("horaActual").value = horaActual;
+        }
+        
+        // Llama a la función para obtener la hora actual cuando la página se carga
+        window.onload = function () {
+            obtenerHoraActual();
+        };
+    </script>
+    <script>
+        // Obtener referencia al campo oculto
+        var campoIdTablaHistorial = document.getElementById("Id_tabla_historial");
+    
+        // Detectar cambios en el campo tipoVehiculo
+        document.getElementById("tipoVehiculo").addEventListener("change", function() {
+            // Obtener el valor seleccionado en tipoVehiculo
+            var tipoSeleccionado = this.value;
+    
+            // Obtener el valor data-id correspondiente
+            var idTablaHistorial = this.options[this.selectedIndex].getAttribute("data-id");
+    
+            // Asignar el valor de idTablaHistorial al campo oculto
+            campoIdTablaHistorial.value = idTablaHistorial;
+        });
+    </script>
+    
+    
 </body>
 </html>
