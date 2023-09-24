@@ -26,7 +26,7 @@ def registrarvehiculo(request):
         Matricula=request.POST['Matricula']
         Tipo_de_vehiculo=request.POST['tipoVehiculo']
         Usuario=request.POST['rol']
-        Fecha=request.POST['fechaActual']
+        Fechas=request.POST['fechaActual']
         Hora_de_entrada=hora_actual
         Estado='A'
         Id_tabla_historial_value=request.POST['Id_tabla_historial']
@@ -37,7 +37,7 @@ def registrarvehiculo(request):
         except HistorialYEstadisticas.DoesNotExist:
             # Maneja el caso en el que el objeto no existe
             Id_tabla_historial_obj = None
-        RegistroVehiculos(Tipo_de_vehiculo=Tipo_de_vehiculo,Matricula=Matricula,Fecha=Fecha,Hora_de_entrada=Hora_de_entrada,Hora_de_salida=Hora_de_salidadefecto,Usuario=Usuario,
+        RegistroVehiculos(Tipo_de_vehiculo=Tipo_de_vehiculo,Matricula=Matricula,fecha=Fechas,Hora_de_entrada=Hora_de_entrada,Hora_de_salida=Hora_de_salidadefecto,Usuario=Usuario,
                       Estado=Estado,Id_tabla_historial=Id_tabla_historial_obj).save()
         return render(request,'interfaz_entrada.html')
     else:
