@@ -93,7 +93,9 @@
                     <div class="col-6 col-md-4">
                       <div class="container mt-5">
                         <div class="border p-3">
-                            <p>Aqui Disponible</p>
+                            <p>Parqueos Disponibles: <span id="contador-parqueos">{{ totaldisponibles }}</span></p>
+                            <div id="date" style="font-size: 50px;"></div>
+                            <div id="clock" style="font-size: 50px;"></div>                            
                         </div>
                     </div>
                     </div>
@@ -135,7 +137,7 @@
                     </div>
                     <input type="hidden" id="fechaActual" name="fechaActual">
                     <input type="hidden" id="horaActual" name="horaActual">
-                    <input type="hidden" id="Id_tabla_historial" name="Id_tabla_historial">
+                    <input type="hidden" id="Id_tabla_historial" name="Id_tabla_historial" name="Id_tabla_historial" value="1">
 
 
                     <div class="text-center mt-3">
@@ -182,7 +184,9 @@
         window.onload = function () {
             establecerFechaYHoraActual();
         };
+       
     </script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
         function updateClock() {
