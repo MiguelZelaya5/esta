@@ -24,6 +24,16 @@ def salir(request):
 def obtener_contador(request):
     totaldisponibles = obtener_total_disponibles()
     return JsonResponse({'totaldisponibles': totaldisponibles[0]})
+"""--------Apartado interfaces-----"""
+
+def int_salida(request):
+    return render(request, 'interfaz_salida.html')
+def int_historial(request):
+    return render(request, 'historia.html')
+def int_configuration(request):
+    return render(request, 'configuration.html')
+def int_perfil(request):
+    return render(request, 'perfil.html')
 
 
 def registrarvehiculo(request):
