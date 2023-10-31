@@ -11,5 +11,7 @@ urlpatterns =[
     path('salir/', views.salir, name="salir"),
     path('agregarRegistro/', views.registrarvehiculo, name='agregarRegistro'),
     path('contador/', views.obtener_contador, name='contador'),
+
+    path('int_salidaAc/<InEid>', views.actualizar_registros),
     
 ]

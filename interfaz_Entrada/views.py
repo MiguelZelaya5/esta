@@ -27,7 +27,9 @@ def obtener_contador(request):
 """--------Apartado interfaces-----"""
 
 def int_salida(request):
-    return render(request, 'interfaz_salida.html')
+    registros=RegistroVehiculos.objects.filter(Estado='A')
+    listado={'registros':registros}
+    return render(request, 'interfaz_salida.html',listado)
 def int_historial(request):
     return render(request, 'historia.html')
 def int_configuration(request):
@@ -73,6 +75,48 @@ def registrarvehiculo(request):
             
 
         return redirect('int_entrada')
+    
+def actualizar_registro(request, idregistrovehiculos):
+    
+    hora_actual = datetime.now().time()  # Obtén la hora actual
+    Hora_de_salida=hora_actual
+    try:
+        with transaction.atomic():
+            # Actualiza el registro en la tabla de registro de vehículos
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE interfaz_Entrada_registrovehiculos SET estado='I', Hora_de_salida=%s WHERE idregistrovehiculos=%s",
+                               [Hora_de_salida, idregistrovehiculos])
+
+            # Incrementa la disponibilidad de parqueo
+            parqueo_disponible = ParqueoDisponible.objects.first()
+            parqueo_disponible.TotalParqueoDisponible += 1
+            parqueo_disponible.save()
+
+            return redirect('int_salida')
+    except Exception as e:
+        # Manejar cualquier error que pueda ocurrir durante la actualización
+        return HttpResponse(f"Error al actualizar el registro: {str(e)}")
+def actualizar_registros(request, idregistrovehiculos):
+    hora_actual = datetime.now().time()  # Obtén la hora actual
+
+    try:
+        with transaction.atomic():
+            # Obtén el registro de vehículos por su ID y actualízalo
+            registro_vehiculo = RegistroVehiculos.objects.get(pk=idregistrovehiculos)
+            registro_vehiculo.Estado = 'I'
+            registro_vehiculo.Hora_de_salida = hora_actual
+            registro_vehiculo.save()
+
+            # Incrementa la disponibilidad de parqueo
+            parqueo_disponible = ParqueoDisponible.objects.first()
+            parqueo_disponible.TotalParqueoDisponible += 1
+            parqueo_disponible.save()
+
+            return redirect('int_salida')
+    except Exception as e:
+        # Manejar cualquier error que pueda ocurrir durante la actualización
+        return HttpResponse(f"Error al actualizar el registro: {str(e)}")
+    
 
 
 def insertar_interfaz_Entrada_registrovehiculos(Tipo_de_vehiculo,Matricula,fecha,Hora_de_entrada,Hora_de_salida,Usuario,
@@ -90,7 +134,15 @@ def obtener_total_disponibles():
     totaldisponibles = cursor.fetchone()  
     return totaldisponibles
 
+def registros_de_parqueosuso():
+    with connection.cursor() as cursor:
+        cursor.execute("select Tipo_de_vehiculo,fecha,Hora_de_entrada,Usuario,Estado from interfaz_Entrada_registrovehiculos where Estado='A' ")
+    registrosparqueos = cursor.fetchall()
+    return registrosparqueos
 
-
-
-       
+def salida_vehiculo(Hora_de_salida,idregistrovehiculos):
+    with connection.cursor() as cursor:
+        cursor.execute("update interfaz_Entrada_registrovehiculos set estado='I',Hora_de_salida=%s where idregistrovehiculos=%s",
+                       (Hora_de_salida,idregistrovehiculos))
+    connection.commit()
+    connection.close()
