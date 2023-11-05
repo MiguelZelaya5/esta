@@ -31,7 +31,7 @@
                                     <td>{{c.Tipo_de_vehiculo}}</td>
                                     <td>{{c.fecha}}</td>
                                     <td>{{c.Hora_de_entrada}}</td>
-                                    <td class="cronometro" data-hora-entrada="{{c.Hora_de_entrada}}">{{ calcularTiempoTranscurrido(c.Hora_de_entrada) }}</td>
+                                    <td class="cronometro">{{ c.tiempo_transcurrido }}</td>
                                     <td>{{c.Usuario}}</td>
                                     <td>{{c.Estado}}</td>
                                 </tr>
@@ -44,31 +44,5 @@
         </div>
     </div>
 
-    <script>
-        // Calcula el tiempo transcurrido y actualiza el cronómetro
-        function calcularTiempoTranscurrido(horaEntrada) {
-            var horaEntradaDate = new Date(horaEntrada);
-            var horaActual = new Date();
-            var tiempoTranscurrido = horaActual - horaEntradaDate;
-
-            // Si no ha transcurrido tiempo, comenzamos el cronómetro desde 0
-            if (tiempoTranscurrido < 0) {
-                return "0:00";
-            } else {
-                // Si ha transcurrido tiempo, mostramos el tiempo transcurrido
-                var minutos = Math.floor(tiempoTranscurrido / 60000);
-                var segundos = Math.floor((tiempoTranscurrido % 60000) / 1000);
-                return minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
-            }
-        }
-
-        // Recorremos las filas y actualizamos los cronómetros
-        document.addEventListener("DOMContentLoaded", function () {
-            var cronometros = document.querySelectorAll(".cronometro");
-            cronometros.forEach(function (cronometro) {
-                var horaEntrada = cronometro.getAttribute("data-hora-entrada");
-                cronometro.innerText = calcularTiempoTranscurrido(horaEntrada);
-            });
-        });
-    </script>
+    
 {% endblock %}

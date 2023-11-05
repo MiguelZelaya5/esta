@@ -13,5 +13,10 @@ urlpatterns =[
     path('contador/', views.obtener_contador, name='contador'),
 
     path('int_salidaAc/<InEid>', views.actualizar_registros),
+    path('get_chart/', views.get_chart, name='get_chart'),
+    path('obtener-anios/', views.obtener_anios, name='obtener_anios'),
+    path('obtener-datos-para-grafico/<int:anio>/', views.obtener_datos_para_grafico, name='obtener_datos_para_grafico'),
+    
+    
     
 ]

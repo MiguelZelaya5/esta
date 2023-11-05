@@ -9,6 +9,11 @@ from django.db import connection
 from interfaz_Entrada.models import RegistroVehiculos,HistorialYEstadisticas,ParqueoDisponible
 from django.db import transaction
 from django.http import JsonResponse
+from random import randrange
+import random
+
+
+
 
 
 
@@ -28,8 +33,26 @@ def obtener_contador(request):
 
 def int_salida(request):
     registros=RegistroVehiculos.objects.filter(Estado='A')
-    listado={'registros':registros}
+    registros_con_tiempo = []
+
+    for registro in registros:
+        tiempo_transcurrido = calcular_tiempo_transcurrido(registro.Hora_de_entrada, registro.Hora_de_salida)
+        registros_con_tiempo.append({'registro': registro, 'tiempo_transcurrido': tiempo_transcurrido})
+
+    listado = {'registros': registros_con_tiempo}
     return render(request, 'interfaz_salida.html',listado)
+
+def calcular_tiempo_transcurrido(hora_entrada, hora_salida):
+    ahora = datetime.now().time()  # Obtiene la hora actual
+    tiempo_transcurrido = datetime.combine(datetime.today(), ahora) - datetime.combine(datetime.today(), hora_entrada)
+    
+    # Formatea el tiempo transcurrido para que sea más legible
+    horas, segundos = divmod(tiempo_transcurrido.seconds, 3600)
+    minutos, segundos = divmod(segundos, 60)
+
+    tiempo_formateado = f"{horas}:{minutos:02}:{segundos:02}"
+    return tiempo_formateado
+
 def int_historial(request):
     return render(request, 'historia.html')
 def int_configuration(request):
@@ -146,3 +169,150 @@ def salida_vehiculo(Hora_de_salida,idregistrovehiculos):
                        (Hora_de_salida,idregistrovehiculos))
     connection.commit()
     connection.close()
+
+"""---------grafica-----------------"""
+
+"""def get_chart(_request):
+
+    colors = ['blue', 'orange', 'red', 'black', 'yellow', 'green', 'magenta', 'lightblue', 'purple', 'brown']
+    random_color = colors[randrange(0, (len(colors)-1))]
+
+    serie = []
+    counter = 0
+
+    while (counter < 7):
+        serie.append(randrange(100, 400))
+        counter += 1
+
+    chart = {
+        'tooltip': {
+            'show': True,
+            'trigger': "axis",
+            'triggerOn': "mousemove|click"
+        },
+        'xAxis': [
+            {
+                'type': "category",
+                'data': ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+            }
+        ],
+        'yAxis': [
+            {
+                'type': "value"
+            }
+        ],
+        'series': [
+            {
+                'data': serie,
+                'type': "line",
+                'itemStyle': {
+                    'color': random_color
+                },
+                'lineStyle': {
+                    'color': random_color
+                }
+            }
+        ]
+    }
+
+    return JsonResponse(chart)"""
+
+
+
+def get_chart(_request):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT MONTH(fecha) AS Mes, COUNT(*) AS Total
+            FROM interfaz_Entrada_registrovehiculos 
+            GROUP BY MONTH(fecha)
+        """)
+        data = cursor.fetchall()
+
+    meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+    random_color = random.choice(['blue', 'orange', 'red', 'green', 'purple', 'brown', 'pink'])
+
+    serie = []
+    xAxis_data = []
+
+    for mes in range(1, 13):
+        # Comprobamos si hay datos para el mes actual
+        mes_existente = any(row[0] == mes for row in data)
+        if mes_existente:
+            total_mes = next((row[1] for row in data if row[0] == mes), 0)
+        else:
+            total_mes = 0
+
+        serie.append(total_mes)
+        xAxis_data.append(meses[mes - 1])
+
+    chart = {
+        'tooltip': {
+            'show': True,
+            'trigger': 'axis',
+            'triggerOn': 'mousemove|click'
+        },
+        'xAxis': [
+            {
+                'type': 'category',
+                'data': xAxis_data
+            }
+        ],
+        'yAxis': [
+            {
+                'type': 'value'
+            }
+        ],
+        'series': [
+            {
+                'data': serie,
+                'type': 'line',
+                'itemStyle': {
+                    'color': random_color
+                },
+                'lineStyle': {
+                    'color': random_color
+                }
+            }
+        ]
+    }
+
+    return JsonResponse(chart)
+
+
+def obtener_anios(request):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT DISTINCT YEAR(fecha) AS Anio 
+            FROM interfaz_Entrada_registrovehiculos
+            ORDER BY Anio DESC
+        """)
+        anios = [row[0] for row in cursor.fetchall()]
+
+    return JsonResponse({'anios': anios})
+
+
+from django.http import JsonResponse
+from django.db import connection
+
+def obtener_datos_para_grafico(request, anio=None):
+    with connection.cursor() as cursor:
+        if anio:
+            cursor.execute("""
+                SELECT MONTH(fecha) AS Mes, COALESCE(COUNT(*), 0) AS Total
+                FROM interfaz_Entrada_registrovehiculos
+                WHERE YEAR(fecha) = %s
+                GROUP BY MONTH(fecha)
+            """, [anio])
+        else:
+            cursor.execute("""
+                SELECT MONTH(fecha) AS Mes, COALESCE(COUNT(*), 0) AS Total
+                FROM interfaz_Entrada_registrovehiculos
+                GROUP BY MONTH(fecha)
+            """)
+
+        data = cursor.fetchall()
+
+    resultados = sorted([{'Mes': row[0], 'Total': row[1]} for row in data], key=lambda x: x['Mes'])
+
+    return JsonResponse({'resultados': resultados})
+

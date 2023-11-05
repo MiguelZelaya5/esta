@@ -1,85 +1,29 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block contenido %}
-            <div class="container-fluid">
-                <div class="row text-center">
-                    <h3 class="pb-2 bg-white mb-4">Historial de Vehiculos</h3>
-                    <div class="col">
-                        <div class="container">
-                            <div class="border p-3 ">
-                                <div class="container">
-                                    <div class="row">
-                                        <!-- Primera columna -->
-                                        <div class="col">
-                                            <div class="p-3 text-center">
-                                                <label for="desde"><h5>Desde:</h5></label>
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="desde" placeholder="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Segunda columna -->
-                                        <div class="col">
-                                            <div class=" p-3 text-center">
-                                                <label for="hasta"><h5>Hasta:</h5></label>
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" id="hasta" placeholder="">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <table class="table custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>.</td>
-                                            <td>.</td>
-                                            <td>.</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>.</td>
-                                            <td>.</td>
-                                            <td>.</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>.</td>
-                                            <td>.</td>
-                                            <td>.</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>.</td>
-                                            <td>.</td>
-                                            <td>.</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>.</td>
-                                            <td>.</td>
-                                            <td>.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+
+<div class="container-fluid">
+    <div class="row text-center">
+        <h3 class="pb-2 bg-white mb-4">Historial de Vehiculos</h3>
+        <div class="col">
+            <div class="container">
+                <div class="border p-3">
+                    
+                    <div class="form-group">
+                        <label for="combobox-anios">Selecciona un Año:</label>
+                        <select id="combobox-anios"></select>
                     </div>
+                    <!-- Gráfica -->
+                    <div id="chart" class="chart"></div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /#page-content-wrapper -->
-    </div>
+</div>
+
+<!-- Apache ECharts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.1/echarts.min.js"></script>
+<!-- Custom JS -->
+<script src="{% static 'js/main.js' %}"></script>
 
 {% endblock %}
