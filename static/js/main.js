@@ -28,7 +28,7 @@ window.addEventListener("load", async () => {
 });*/
 const getChartData = async (anio = null) => {
     try {
-        let url = "http://127.0.0.1:8000/entrada/obtener-datos-para-grafico/";
+        let url = "http://127.0.0.1:8000/obtener-datos-para-grafico/";
         if (anio) {
             url += `${anio}/`;
         }
@@ -102,7 +102,7 @@ window.addEventListener("load", async () => {
 
 const llenarCombobox = async () => {
     try {
-        const response = await fetch("http://127.0.0.1:8000/entrada/obtener-anios/");
+        const response = await fetch("http://127.0.0.1:8000/obtener-anios/");
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -123,7 +123,7 @@ const llenarCombobox = async () => {
         });
     } catch (ex) {
         console.error("Error fetching years:", ex);
-        
+        // Manejar el error según sea necesario
     }
 };
 

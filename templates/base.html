@@ -22,14 +22,16 @@
 
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
-        <div class="bg-white" id="sidebar-wrapper">
-            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom">
-                <i class="fas fa-user-secret me-2"></i><h5>ESTACIONAMIENTO</h5>
+        <div style="background-color: #800000;" id="sidebar-wrapper">
+            <div class="sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase border-bottom text-white">
+                
+                <h5 class="pt-3">ESTACIONAMIENTO</h5>
             </div>
+                       
             <div class="list-group list-group-flush my-3">
                 <div class="">
                     <a href="{% url 'int_entrada' %}" style="text-decoration: none;">
-                        <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent second-text fw-bold" type="button"  aria-expanded="false">
+                        <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent text-white fw-bold" type="button"  aria-expanded="false">
                             <i class="fas fa-tachometer-alt me-2"></i>Entrada
                         </button>
                     </a>
@@ -37,7 +39,7 @@
                 <!-- Dropdown 2 -->
                 <div class="">
                     <a href="{% url 'int_salida' %}" style="text-decoration: none">
-                        <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent second-text fw-bold" type="button"  aria-expanded="false">
+                        <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent text-white fw-bold" type="button"  aria-expanded="false">
                             <i class="fas fa-project-diagram me-2"></i>Salida
                         </button>
                     </a>
@@ -46,17 +48,18 @@
                 <!-- Dropdown 3 -->
                 <div class="">
                     <a href="{% url 'historial' %}" style="text-decoration: none">
-                        <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent second-text fw-bold" type="button"  aria-expanded="false">
+                        <button class="btn btn-secondary  list-group-item list-group-item-action bg-transparent text-white fw-bold" type="button"  aria-expanded="false">
                             <i class="fas fa-chart-line me-2"></i>Historial
                         </button>
                     </a>
                 </div>
 
-                <a href="{% url 'salir' %}" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold">
-                    <div class="">
-                        <i class="fas fa-power-off me-2">Cerrar Sesión</i>
+                <a href="{% url 'salir' %}" class="list-group-item list-group-item-action bg-transparent text-white fw-bold">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-power-off me-2"></i>
+                        <span>Cerrar Sesión</span>
                     </div>
-                </a>
+                </a>                
             </div>
         </div>
 

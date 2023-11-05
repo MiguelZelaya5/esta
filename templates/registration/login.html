@@ -14,7 +14,7 @@
                 <div class="card shadow w-50">
                     <div>
                         <div class="card-body">
-                            <form action="/login" method="post">
+                            <form method="post">
 
                                 {% csrf_token %}
 
@@ -22,10 +22,10 @@
                                 <h5 class="text-center">login</h5>
 
                                 <label>Email</label>
-                                <input type="email;" class="form-control mb-3" name="usuario">
+                                <input type="email;" class="form-control mb-3" name="username">
 
                                 <label>Contraseña</label>
-                                <input type="password" class="form-control mb-3" name="contraseña">
+                                <input type="password" class="form-control mb-3" name="password">
 
                                 <button type="submit" class="btn btn-primary w-100">Acceder</button>
                             </form>

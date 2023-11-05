@@ -7,7 +7,7 @@
                     <div class="row g-0 text-center m-4">
                         <div class="col-sm-4 col-sm-7 me-5">
                             <div class="container mt-5">
-                                <div class="border p-3 parqueos-container">
+                                <div class="p-3 parqueos-container">
                                     <div id="date" style="font-size: 50px;"></div>
                                     <div id="clock" style="font-size: 50px;"></div>                            
                                 </div>
@@ -16,17 +16,37 @@
                         <div class="col-6 col-md-4">
                             <div class="container mt-5">
                                 <div class="container mt-5 parqueos-container">
-                                    <div class="p-3" style="font-size: 50px;">
-                                        <p class="parqueos-text"><h2>Parqueos Disponibles:</h2></p>
-                                        <div class="spinner-border text-secondary" role="status">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                        <span id="contador-parqueos" class="parqueos-counter">{{ totaldisponibles }}</span>
-                                        <span id="contador-parqueos2" class="parqueos-counter2">{{ totaldisponiblesmotos }}</span>
-                                        <span id="contador-parqueos3" class="parqueos-counter3">{{ totaldisponiblesmicros }}</span>
-                                        <span id="contador-parqueos4" class="parqueos-counter4">{{ totaldisponblestodos }}</span>
+                                    <div class="p-2">
+                                        <div class="row justify-content-center align-items-center">
+                                            <div class="col-7 text-center"> 
+                                                <h1 class="mb-0">Parqueos Disponibles</h1>
+                                            </div>
+                                            <div class="col-1 text-center"> 
+                                                <div class="spinner-border text-secondary" role="status" style="width: 1.5rem; height: 1.5rem;">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </div>
+                                        </div>                                        
+                                        <div class="pt-3" style="position: relative; top: 20%; right: 5%; left: 1%;">
+                                            <div style="display: inline-block; text-align: center; margin: 0 5px; font-size: 40px;">
+                                                <h4>Automoviles</h4>
+                                                <span id="contador-parqueos" class="parqueos-counter">{{ totaldisponibles }}</span>
+                                            </div>
+                                            <div style="display: inline-block; text-align: center; margin: 0 5px; font-size: 40px;">
+                                                <h4>Motocicletas</h4>
+                                                <span id="contador-parqueos2" class="parqueos-counter2">{{ totaldisponiblesmotos }}</span>
+                                            </div>
+                                            <div style="display: inline-block; text-align: center; margin: 0 5px; font-size: 40px;">
+                                                <h4>Microbuses</h4>
+                                                <span id="contador-parqueos3" class="parqueos-counter3">{{ totaldisponiblesmicros }}</span>
+                                            </div>
+                                            <div style="display: inline-block; text-align: center; margin: 0 5px; font-size: 40px;">
+                                                <h3>Total:</h3>
+                                                <span id="contador-parqueos4" class="parqueos-counter4">{{ totaldisponblestodos }}</span>
+                                            </div>  
+                                        </div>                                                                                                                                                        
                                     </div>
-                                </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
@@ -37,13 +57,13 @@
                             {% csrf_token %}
                         <div class="row">
                             <div class="col-md-4">
-                                <label for="matricula">Matricula:</label>
+                                <label for="matricula">CARNET/DUI:</label>
                                 
                                 <input type="text" class="form-control" id="nombre1" placeholder="" name="Matricula">
                             </div>
                 
                             <div class="col-md-4">
-                                <label for="tipoVehiculo">Tipo Vehiculo:</label>
+                                <label for="tipoVehiculo">TIPO DE VEHICULO:</label>
                                 <select class="form-select" id="tipoVehiculo" name="tipoVehiculo">
                                     <option value="carro" data-id="1">Carro</option>
                                     <option value="moto" data-id="2">Moto</option>
@@ -54,7 +74,7 @@
                             </div>
                             
                             <div class="col-md-4">
-                                <label for="rol">Rol:</label>
+                                <label for="rol">ROL:</label>
                                 <select class="form-select" id="rol" name="rol">
                                     <option value="Estudiante">Estudiante</option>
                                     <option value="Profesor">Profesor</option>
@@ -79,6 +99,5 @@
     </div>
     <!-- /#page-content-wrapper -->
     </div>
-
    
     {% endblock %}
