@@ -360,3 +360,8 @@ def get_chart(_request):
     }
 
     return JsonResponse(chart)
+
+@login_required
+def redirigir_a_admin(request):
+    # Redirige al usuario a la página de administración
+    return redirect('admin:index')
