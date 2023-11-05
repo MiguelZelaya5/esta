@@ -133,6 +133,10 @@
                     .then(data => {
                         // Actualizar el valor del contador en la página
                         document.getElementById('contador-parqueos').textContent = data.totaldisponibles;
+                        document.getElementById('contador-parqueos2').textContent = data.totaldisponiblesmotos;
+                        document.getElementById('contador-parqueos3').textContent = data.totaldisponiblesmicros;
+                        document.getElementById('contador-parqueos4').textContent = data.totaldisponblestodos;
+                        
                     })
                     .catch(error => console.error('Error al obtener el contador: ', error));
             }

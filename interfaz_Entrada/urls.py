@@ -11,6 +11,9 @@ urlpatterns =[
     path('salir/', views.salir, name="salir"),
     path('agregarRegistro/', views.registrarvehiculo, name='agregarRegistro'),
     path('contador/', views.obtener_contador, name='contador'),
+    path('calculartime/', views.obtener_tiempo, name='calculartime'),
+    path('eliminarregistros/<idregistrovehiculos>', views.eliminarRegistro),
+    path('actualizarregistros/<idregistrovehiculos>', views.actualizar_registros),
 
     path('int_salidaAc/<InEid>', views.actualizar_registros),
     path('get_chart/', views.get_chart, name='get_chart'),

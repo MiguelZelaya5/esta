@@ -1,8 +1,8 @@
 :root {
-  --main-bg-color: #6ac7de;
+  --main-bg-color: #6ade89;
   --main-text-color: #000000;
-  --second-text-color: #bbbec5;
-  --second-bg-color: #a1f4ff;
+  --second-text-color: #b82525;
+  --second-bg-color: #1f30c7;
 }
 
 .primary-text {
@@ -29,10 +29,10 @@
   overflow-x: hidden;
   background-image: linear-gradient(
     to right,
-    #ffffff,
-    #b1d4d7,
-    #8fb0b8,
-    #95d3e1,
+    #c90e0e,
+    #541dc1,
+    #00ccff,
+    #0dff00,
     #8ad1e1
   );
 }

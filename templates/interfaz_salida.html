@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 
 {% block contenido %}
-    <div class="container-fluid">
-        <div class="row">
-            <h3 class="pb-2 bg-white mb-4"><CENTER>Salidas Vehiculares</CENTER></h3>       
-            <div class="container">
-                <div class="d-flex justify-content-end pb-3">
-                    <div class="text-right">
-                        <input type="text" id="campo_busqueda" placeholder="CARNET/DUI:">
-                        <button id="boton_buscar">Buscar</button>
-                        <a href="#" id="mostrar_todos" style="display: none;">Mostrar todos los registros</a>
-                    </div>
+<div class="container-fluid">
+    <div class="row">
+        <h3 class="pb-2 bg-white mb-4"><CENTER>Salidas Vehiculares</CENTER></h3>
+        <div class="container">
+            <div class="d-flex justify-content-end pb-3">
+                <style>
+
+                    #campo_busqueda {
+                        margin-right: 10px; 
+                    }
+                </style>
+                
+                <div class="text-right d-flex align-items-center">
+                    <input type="text" id="campo_busqueda" placeholder="CARNET/DUI:">
+                    <button class="btn btn-primary" id="boton_buscar">Buscar</button>
+                    <button class="btn btn-primary" id="mostrar_todos" style="display: none;">Mostrar Todos</button>
                 </div>
+            </div>                
+            <div class="col">
                 <div class="col">
                     <div class="border p-3">
                         <table class="table table-hover table-striped table-bordered" id="example">
@@ -23,26 +31,57 @@
                                 <th>TIEMPO TRANSCURRIDO</th>
                                 <th>USUARIO</th>
                                 <th>ESTADO</th>
+                                <th colspan="2" class="text-center">OPCIONES</th>
                             </thead>
                             <tbody>
                                 {% for c in registros %}
                                 <tr>
-                                    <td>{{c.Matricula}}</td>
-                                    <td>{{c.Tipo_de_vehiculo}}</td>
-                                    <td>{{c.fecha}}</td>
-                                    <td>{{c.Hora_de_entrada}}</td>
-                                    <td class="cronometro">{{ c.tiempo_transcurrido }}</td>
-                                    <td>{{c.Usuario}}</td>
-                                    <td>{{c.Estado}}</td>
+                                    <td style="font-size: 20px;">{{c.Matricula}}</td>
+                                    <td style="font-size: 20px;">{{c.Tipo_de_vehiculo}}</td>
+                                    <td style="font-size: 20px;">{{c.fecha}}</td>
+                                    <td style="font-size: 20px;">{{c.Hora_de_entrada}}</td>
+                                    <td id="tiempo_transcurrido_{{c.idregistrovehiculos}}">{{c.TiempoTranscurrido}}</td>
+                                    <td style="font-size: 20px;">{{c.Usuario}}</td>
+                                    <td style="font-size: 20px;">{{c.Estado}}</td>
+                                    <td style="font-size: 20px;" class="text-center"><a href="actualizarregistros/{{c.idregistrovehiculos}}" class="btn btn-primary btn-lg">Salida</a></td>
+                                    <td style="font-size: 20px;" class="text-center"><a href="eliminarregistros/{{c.idregistrovehiculos}}" class="btn btn-danger btn-lg">Eliminar</a></td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
     </div>
+</div>
 
-    
+    <script>
+        // Calcula el tiempo transcurrido y actualiza el cronómetro
+        function calcularTiempoTranscurrido(horaEntrada) {
+            var horaEntradaDate = new Date(horaEntrada);
+            var horaActual = new Date();
+            var tiempoTranscurrido = horaActual - horaEntradaDate;
+
+            // Si no ha transcurrido tiempo, comenzamos el cronómetro desde 0
+            if (tiempoTranscurrido < 0) {
+                return "0:00";
+            } else {
+                // Si ha transcurrido tiempo, mostramos el tiempo transcurrido
+                var minutos = Math.floor(tiempoTranscurrido / 60000);
+                var segundos = Math.floor((tiempoTranscurrido % 60000) / 1000);
+                return minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
+            }
+        }
+
+        // Recorremos las filas y actualizamos los cronómetros
+        document.addEventListener("DOMContentLoaded", function () {
+            var cronometros = document.querySelectorAll(".cronometro");
+            cronometros.forEach(function (cronometro) {
+                var horaEntrada = cronometro.getAttribute("data-hora-entrada");
+                cronometro.innerText = calcularTiempoTranscurrido(horaEntrada);
+            });
+        });
+    </script>
 {% endblock %}
