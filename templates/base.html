@@ -54,10 +54,10 @@
                     </a>
                 </div>
 
-                <a href="{% url 'redirigir_a_admin' %}" class="list-group-item list-group-item-action bg-transparent text-white fw-bold">
+                <a href="{% url 'salir' %}" class="list-group-item list-group-item-action bg-transparent text-white fw-bold">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-power-off me-2"></i>
-                        <span>Ir al Admin</span>
+                        <span>Cerrar Sesión</span>
                     </div>
                 </a>                
             </div>
@@ -84,7 +84,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{% url 'perfil' %}">Perfil</a></li>
-                                <li><a class="dropdown-item" href="{% url 'configura' %}">Configuracion</a></li>
+                                <li><a class="dropdown-item" href="{% url 'redirigir_a_admin' %}">Admin</a></li>
                                 <li><a class="dropdown-item" href="{% url 'salir' %}">Cerrar Sesion</a></li>
                             </ul>
                         </li>
