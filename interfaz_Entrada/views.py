@@ -9,6 +9,8 @@ from django.db import connection
 from interfaz_Entrada.models import RegistroVehiculos,HistorialYEstadisticas,ParqueoDisponible
 from django.db import transaction
 from django.http import JsonResponse
+from django.db.models import F
+from datetime import datetime
 
 
 
@@ -16,20 +18,85 @@ from django.http import JsonResponse
 ##@login_required
 def int_entrada(request):
     totaldisponibles = obtener_total_disponibles()
-    return render(request, 'interfaz_entrada.html', {'totaldisponibles': totaldisponibles[0]})
+    totaldisponiblesmotos = obtener_total_disponibles2()
+    totaldisponiblesmicros = obtener_total_disponibles3()
+    totaldisponblestodos=obtener_total_disponibles4()
+    return render(request, 'interfaz_entrada.html', {
+        'totaldisponibles': totaldisponibles[0],
+        'totaldisponiblesmotos': totaldisponiblesmotos[0],
+        'totaldisponiblesmicros': totaldisponiblesmicros[0],
+        'totaldisponblestodos': totaldisponblestodos[0]
+
+    })
 
 def salir(request):
     logout(request)
     return redirect('/')
 def obtener_contador(request):
     totaldisponibles = obtener_total_disponibles()
-    return JsonResponse({'totaldisponibles': totaldisponibles[0]})
+    totaldisponiblesmotos = obtener_total_disponibles2()
+    totaldisponiblesmicros = obtener_total_disponibles3()
+    totaldisponblestodos=obtener_total_disponibles4()
+    return JsonResponse({
+        'totaldisponibles': totaldisponibles[0],
+        'totaldisponiblesmotos': totaldisponiblesmotos[0],
+        'totaldisponiblesmicros': totaldisponiblesmicros[0],
+        'totaldisponblestodos': totaldisponblestodos[0]
+    })
+
 """--------Apartado interfaces-----"""
 
 def int_salida(request):
-    registros=RegistroVehiculos.objects.filter(Estado='A')
-    listado={'registros':registros}
-    return render(request, 'interfaz_salida.html',listado)
+    registros = RegistroVehiculos.objects.filter(Estado='A')
+    registros_data = []
+
+    for registro in registros:
+        tiempo_transcurrido = calcularTiempoTranscurrido(registro.Hora_de_entrada)
+        registros_data.append({
+            'idregistrovehiculos': registro.idregistrovehiculos,
+            'Matricula': registro.Matricula,
+            'Tipo_de_vehiculo':registro.Tipo_de_vehiculo,
+            'fecha':registro.fecha,
+            'Hora_de_entrada':registro.Hora_de_entrada,
+            'TiempoTranscurrido': tiempo_transcurrido,
+            'Usuario':registro.Usuario,
+            'Estado':registro.Estado
+        })
+
+    # Renderiza la plantilla HTML y pasa los datos a la misma
+    return render(request, 'interfaz_salida.html', {'registros': registros_data})
+def calcularTiempoTranscurrido(hora_entrada):
+    # Obtiene la hora actual
+    ahora = datetime.now().time()
+
+    # Calcula la diferencia de tiempo
+    horas = ahora.hour - hora_entrada.hour
+    minutos = ahora.minute - hora_entrada.minute
+    segundos = ahora.second - hora_entrada.second
+
+    # Asegura que los valores estén en el rango correcto
+    if segundos < 0:
+        segundos += 60
+        minutos -= 1
+    if minutos < 0:
+        minutos += 60
+        horas -= 1
+    if horas < 0:
+        horas += 24  # 24 horas en un día
+
+    # Devuelve el tiempo transcurrido en formato "HH:MM:SS"
+    tiempo_transcurrido = f'{horas:02d}:{minutos:02d}:{segundos:02d}'
+    return tiempo_transcurrido
+
+def obtener_tiempo(request):
+    registros = RegistroVehiculos.objects.filter(Estado='A')
+    tiempo_transcurrido = {}
+
+    for registro in registros:
+        tiempo = calcularTiempoTranscurrido(registro.Hora_de_entrada)
+        tiempo_transcurrido[registro.idregistrovehiculos] = tiempo
+
+    return JsonResponse(tiempo_transcurrido)
 def int_historial(request):
     return render(request, 'historia.html')
 def int_configuration(request):
@@ -38,10 +105,11 @@ def int_perfil(request):
     return render(request, 'perfil.html')
 
 
+
 def registrarvehiculo(request):
     if request.method == 'POST':
-        Hora_de_salidadefecto = time(0, 0, 0)
-        hora_actual = datetime.now().time()
+        Hora_de_salidadefecto = time(0, 0, 0).strftime('%H:%M:%S')
+        hora_actual = datetime.now().time().strftime('%H:%M:%S')
         Matricula = request.POST['Matricula']
         Tipo_de_vehiculo = request.POST['tipoVehiculo']
         Usuario = request.POST['rol']
@@ -65,7 +133,7 @@ def registrarvehiculo(request):
                     )
         try:
             with transaction.atomic():
-                parqueo_disponible = ParqueoDisponible.objects.first()
+                parqueo_disponible = ParqueoDisponible.objects.get(idParqueoDisponibel=Id_tabla_historial_value)
                 parqueo_disponible.TotalParqueoDisponible -= 1
                 parqueo_disponible.save()
         except Exception as e:
@@ -75,7 +143,6 @@ def registrarvehiculo(request):
             
 
         return redirect('int_entrada')
-    
 def actualizar_registro(request, idregistrovehiculos):
     
     hora_actual = datetime.now().time()  # Obtén la hora actual
@@ -98,17 +165,18 @@ def actualizar_registro(request, idregistrovehiculos):
         return HttpResponse(f"Error al actualizar el registro: {str(e)}")
 def actualizar_registros(request, idregistrovehiculos):
     hora_actual = datetime.now().time()  # Obtén la hora actual
-
+    hora_actual_formateada = hora_actual.strftime("%H:%M")
     try:
         with transaction.atomic():
             # Obtén el registro de vehículos por su ID y actualízalo
             registro_vehiculo = RegistroVehiculos.objects.get(pk=idregistrovehiculos)
+            Id_tabla_historial = registro_vehiculo.Id_tabla_historial_id
             registro_vehiculo.Estado = 'I'
-            registro_vehiculo.Hora_de_salida = hora_actual
+            registro_vehiculo.Hora_de_salida = hora_actual_formateada
             registro_vehiculo.save()
 
             # Incrementa la disponibilidad de parqueo
-            parqueo_disponible = ParqueoDisponible.objects.first()
+            parqueo_disponible = ParqueoDisponible.objects.get(idParqueoDisponibel=Id_tabla_historial)
             parqueo_disponible.TotalParqueoDisponible += 1
             parqueo_disponible.save()
 
@@ -130,9 +198,26 @@ def insertar_interfaz_Entrada_registrovehiculos(Tipo_de_vehiculo,Matricula,fecha
 
 def obtener_total_disponibles():
     with connection.cursor() as cursor:
-        cursor.execute("select TotalParqueoDisponible from interfaz_Entrada_parqueodisponible")           
+        cursor.execute("select TotalParqueoDisponible from interfaz_Entrada_parqueodisponible where idParqueoDisponibel=1")           
     totaldisponibles = cursor.fetchone()  
     return totaldisponibles
+def obtener_total_disponibles2():
+    with connection.cursor() as cursor:
+        cursor.execute("select TotalParqueoDisponible from interfaz_Entrada_parqueodisponible where idParqueoDisponibel=2")           
+    totaldisponibles = cursor.fetchone()  
+    return totaldisponibles
+def obtener_total_disponibles3():
+    with connection.cursor() as cursor:
+        cursor.execute("select TotalParqueoDisponible from interfaz_Entrada_parqueodisponible where idParqueoDisponibel=3")           
+    totaldisponibles = cursor.fetchone()  
+    return totaldisponibles
+def obtener_total_disponibles4():
+    with connection.cursor() as cursor:
+        cursor.execute("select sum(TotalParqueoDisponible) from interfaz_Entrada_parqueodisponible")           
+    totaldisponibles = cursor.fetchone()  
+    return totaldisponibles
+
+
 
 def registros_de_parqueosuso():
     with connection.cursor() as cursor:
@@ -146,3 +231,22 @@ def salida_vehiculo(Hora_de_salida,idregistrovehiculos):
                        (Hora_de_salida,idregistrovehiculos))
     connection.commit()
     connection.close()
+def eliminarRegistro(request, idregistrovehiculos):
+    registro_vehiculo = RegistroVehiculos.objects.get(pk=idregistrovehiculos)
+    Id_tabla_historial = registro_vehiculo.Id_tabla_historial_id  # Acceder directamente al ID de la clave externa
+    parqueo_disponible = ParqueoDisponible.objects.get(idParqueoDisponibel=Id_tabla_historial)
+    parqueo_disponible.TotalParqueoDisponible += 1
+    parqueo_disponible.save()
+    registro_vehiculo.delete()
+
+    return redirect('int_salida')
+
+
+
+
+
+
+
+
+
+       

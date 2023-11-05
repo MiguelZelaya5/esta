@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 
 {% block contenido %}
-    <div class="container-fluid">
-        <div class="row">
-            <h3 class="pb-2 bg-white mb-4"><CENTER>Salidas Vehiculares</CENTER></h3>       
-            <div class="container">
-                <div class="d-flex justify-content-end pb-3">
-                    <div class="text-right">
-                        <input type="text" id="campo_busqueda" placeholder="CARNET/DUI:">
-                        <button id="boton_buscar">Buscar</button>
-                        <a href="#" id="mostrar_todos" style="display: none;">Mostrar todos los registros</a>
-                    </div>
+<div class="container-fluid">
+    <div class="row">
+        <h3 class="pb-2 bg-white mb-4"><CENTER>Salidas Vehiculares</CENTER></h3>
+        <div class="container">
+            <div class="d-flex justify-content-end pb-3">
+                <style>
+
+                    #campo_busqueda {
+                        margin-right: 10px; 
+                    }
+                </style>
+                
+                <div class="text-right d-flex align-items-center">
+                    <input type="text" id="campo_busqueda" placeholder="CARNET/DUI:">
+                    <button class="btn btn-primary" id="boton_buscar">Buscar</button>
+                    <button class="btn btn-primary" id="mostrar_todos" style="display: none;">Mostrar Todos</button>
                 </div>
+            </div>                
+            <div class="col">
                 <div class="col">
                     <div class="border p-3">
                         <table class="table table-hover table-striped table-bordered" id="example">
@@ -23,52 +31,109 @@
                                 <th>TIEMPO TRANSCURRIDO</th>
                                 <th>USUARIO</th>
                                 <th>ESTADO</th>
+                                <th colspan="2" class="text-center">OPCIONES</th>
                             </thead>
                             <tbody>
                                 {% for c in registros %}
                                 <tr>
-                                    <td>{{c.Matricula}}</td>
-                                    <td>{{c.Tipo_de_vehiculo}}</td>
-                                    <td>{{c.fecha}}</td>
-                                    <td>{{c.Hora_de_entrada}}</td>
-                                    <td class="cronometro" data-hora-entrada="{{c.Hora_de_entrada}}">{{ calcularTiempoTranscurrido(c.Hora_de_entrada) }}</td>
-                                    <td>{{c.Usuario}}</td>
-                                    <td>{{c.Estado}}</td>
+                                    <td style="font-size: 20px;">{{c.Matricula}}</td>
+                                    <td style="font-size: 20px;">{{c.Tipo_de_vehiculo}}</td>
+                                    <td style="font-size: 20px;">{{c.fecha}}</td>
+                                    <td style="font-size: 20px;">{{c.Hora_de_entrada}}</td>
+                                    <td id="tiempo_transcurrido_{{c.idregistrovehiculos}}">{{c.TiempoTranscurrido}}</td>
+                                    <td style="font-size: 20px;">{{c.Usuario}}</td>
+                                    <td style="font-size: 20px;">{{c.Estado}}</td>
+                                    <td style="font-size: 20px;" class="text-center"><a href="actualizarregistros/{{c.idregistrovehiculos}}" class="btn btn-primary btn-lg">Salida</a></td>
+                                    <td style="font-size: 20px;" class="text-center"><a href="eliminarregistros/{{c.idregistrovehiculos}}" class="btn btn-danger btn-lg">Eliminar</a></td>
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // Calcula el tiempo transcurrido y actualiza el cronómetro
-        function calcularTiempoTranscurrido(horaEntrada) {
-            var horaEntradaDate = new Date(horaEntrada);
-            var horaActual = new Date();
-            var tiempoTranscurrido = horaActual - horaEntradaDate;
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var registros = JSON.parse('{{ registros_json|escapejs }}');
+        var tiempoTranscurridoElements = {};
 
-            // Si no ha transcurrido tiempo, comenzamos el cronómetro desde 0
-            if (tiempoTranscurrido < 0) {
-                return "0:00";
-            } else {
-                // Si ha transcurrido tiempo, mostramos el tiempo transcurrido
-                var minutos = Math.floor(tiempoTranscurrido / 60000);
-                var segundos = Math.floor((tiempoTranscurrido % 60000) / 1000);
-                return minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
-            }
+        for (var i = 0; i < registros.length; i++) {
+            var idregistrovehiculos = registros[i].ID;
+            tiempoTranscurridoElements[idregistrovehiculos] = document.getElementById("tiempo_transcurrido_" + idregistrovehiculos);
         }
 
-        // Recorremos las filas y actualizamos los cronómetros
-        document.addEventListener("DOMContentLoaded", function () {
-            var cronometros = document.querySelectorAll(".cronometro");
-            cronometros.forEach(function (cronometro) {
-                var horaEntrada = cronometro.getAttribute("data-hora-entrada");
-                cronometro.innerText = calcularTiempoTranscurrido(horaEntrada);
-            });
+        setInterval(function () {
+            for (var i = 0; i < registros.length; i++) {
+                var idregistrovehiculos = registros[i].ID;
+                var tiempoTranscurrido = registros[i].TiempoTranscurrido.split(":");
+                var minutos = parseInt(tiempoTranscurrido[0]);
+                var segundos = parseInt(tiempoTranscurrido[1]);
+
+                segundos++;
+
+                if (segundos === 60) {
+                    minutos++;
+                    segundos = 0;
+                }
+
+                tiempoTranscurridoElements[idregistrovehiculos].textContent = minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
+                registros[i].TiempoTranscurrido = minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
+            }
+        }, 1000); // Cambiado a 1000 ms (1 segundo)
+    });
+</script>
+<script>
+    function actualizarTiempoTranscurrido() {
+        $.ajax({
+            url: 'calculartime', // Reemplaza con la URL correcta de tu vista Django
+            success: function (data) {
+                for (var idregistrovehiculos in data) {
+                    var tiempoTranscurrido = data[idregistrovehiculos];
+                    $('#tiempo_transcurrido_' + idregistrovehiculos).text(tiempoTranscurrido);
+                }
+            }
         });
-    </script>
+    }
+
+    // Actualiza el tiempo cada segundo (1000 ms)
+    setInterval(actualizarTiempoTranscurrido, 1000);
+</script>
+<script>
+    // Función para buscar y desplazarse a la parte de la página
+    function buscarYDesplazarse() {
+        var campoBusqueda = document.getElementById("campo_busqueda").value.toLowerCase();
+        var filas = document.querySelectorAll('tbody tr');
+        var encontrado = false;
+
+        filas.forEach(function (fila) {
+            if (fila.textContent.toLowerCase().includes(campoBusqueda)) {
+                fila.scrollIntoView({ behavior: "smooth" });
+                fila.classList.add("resaltado"); // Agrega una clase para resaltar toda la fila
+                encontrado = true;
+
+                // Elimina la clase de resaltado después de 3 segundos (3000 ms)
+                setTimeout(function () {
+                    fila.classList.remove("resaltado");
+                }, 3000);
+            }
+        });
+
+        if (!encontrado) {
+            alert("No se encontró el registro.");
+        }
+    }
+
+    document.getElementById("boton_buscar").addEventListener("click", buscarYDesplazarse);
+</script>
+<style>
+    .resaltado {
+        background-color: yellow; /* Cambia esto al estilo deseado para resaltar */
+    }
+</style>
 {% endblock %}
