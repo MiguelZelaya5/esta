@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="container-fluid">
+    <div class="row">
+        <h3 class="pb-2 bg-white mb-4"><CENTER>BUSQUEDA</CENTER></h3>
+        <div class="container">
+            <div class="d-flex justify-content-end pb-3">
+                <style>
+                    #campo_busqueda {
+                        margin-right: 10px;
+                    }
+                </style>
+                <div class="text-right d-flex align-items-center">
+                    <input type="text" id="matricula" placeholder="CARNET/DUI:">
+                    <button class="btn btn-primary" id="boton_buscar">Buscar</button>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col">
+                    <div class="border p-3">
+                        <table class="table table-hover table-striped table-bordered" id="example">
+                            <thead style="background-color: rgb(202, 199, 194); color: #121213;">
+                                <th>IDENTIFICADOR</th>
+                                <th>TIPO DE VEHICULO</th>
+                                <th>FECHA</th>
+                                <th>HORA DE ENTRADA</th>
+                                <th>HORA DE SALIDA</th>
+                                <th>USUARIO</th>
+                                <th>ESTADO</th>
+                                <th colspan="1" class="text-center"></th>
+                            </thead>
+                            <tbody>
+                                {% for c in registros %}
+                                <tr>
+                                    <td style="font-size: 20px;">{{c.Matricula}}</td>
+                                    <td style="font-size: 20px;">{{c.Tipo_de_vehiculo}}</td>
+                                    <td style="font-size: 20px;">{{c.fecha}}</td>
+                                    <td style="font-size: 20px;">{{c.Hora_de_entrada|time:"h:i A"}}</td>
+                                    <td style="font-size: 20px;">{{ c.Hora_de_salida|time:"h:i A" }}</td>
+                                    <td style="font-size: 20px;">{{c.Usuario}}</td>
+                                    <td style="font-size: 20px;">{{c.Estado}}</td>
+                                    <td style="font-size: 20px;" class="text-center"><a href="{% url 'eliminarregistros2' c.idregistrovehiculos c.Matricula %}" class="btn btn-danger btn-lg">Eliminar</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#boton_buscar').click(function() {
+            var matricula = $('#matricula').val();
+            // Redirige a la URL de registrospormatricula con la matrícula como parámetro
+            window.location.href = '/registrospormatricula/' + matricula;
+        });
+    });
+</script>
+{% endblock %}

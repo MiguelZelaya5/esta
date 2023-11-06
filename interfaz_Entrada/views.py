@@ -126,13 +126,37 @@ def eliminarRegistro(request, idregistrovehiculos):
 
     return redirect('int_salida')
 
+@login_required
+def int_busqueda(request):
+    return render(request, 'busqueda.html')
+def registros_por_matricula(request, matricula):
+    registros = RegistroVehiculos.objects.filter(Matricula=matricula)
+    return render(request, 'busqueda.html', {'registros': registros})
+
+def eliminarRegistro2(request, idregistrovehiculos,matricula):
+    registros = RegistroVehiculos.objects.filter(Matricula=matricula)
+    registro_vehiculo = RegistroVehiculos.objects.get(pk=idregistrovehiculos)
+
+    # Verifica si el estado del registro es "I" (inactivo)
+    if registro_vehiculo.Estado == 'I':
+        registro_vehiculo.delete()  # Si es inactivo, elimina el registro
+    else:
+        # Si el estado es "A" (activo), realiza las acciones adicionales
+        Id_tabla_historial = registro_vehiculo.Id_tabla_historial_id
+        parqueo_disponible = ParqueoDisponible.objects.get(idParqueoDisponibel=Id_tabla_historial)
+        parqueo_disponible.TotalParqueoDisponible += 1
+        parqueo_disponible.save()
+        registro_vehiculo.delete()  # Opcionalmente, puedes eliminar el registro si es necesario
+    
+    return render(request, 'busqueda.html', {'registros': registros})
+
 
 @login_required
 def registrarvehiculo(request):
     if request.method == 'POST':
         Hora_de_salidadefecto = time(0, 0, 0).strftime('%H:%M:%S')
         hora_actual = datetime.now().time().strftime('%H:%M:%S')
-        Matricula = request.POST['Matricula']
+        Matricula = request.POST['Matricula'].upper()
         Tipo_de_vehiculo = request.POST['tipoVehiculo']
         Usuario = request.POST['rol']
         Fecha = request.POST['fechaActual']

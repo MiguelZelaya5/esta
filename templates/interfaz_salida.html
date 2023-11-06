@@ -39,8 +39,8 @@
                                     <td style="font-size: 20px;">{{c.Matricula}}</td>
                                     <td style="font-size: 20px;">{{c.Tipo_de_vehiculo}}</td>
                                     <td style="font-size: 20px;">{{c.fecha}}</td>
-                                    <td style="font-size: 20px;">{{c.Hora_de_entrada}}</td>
-                                    <td id="tiempo_transcurrido_{{c.idregistrovehiculos}}">{{c.TiempoTranscurrido}}</td>
+                                    <td style="font-size: 20px;">{{c.Hora_de_entrada|time:"h:i A"}}</td>
+                                    <td style="font-size: 20px;" id="tiempo_transcurrido_{{c.idregistrovehiculos}}">{{c.TiempoTranscurrido}}</td>
                                     <td style="font-size: 20px;">{{c.Usuario}}</td>
                                     <td style="font-size: 20px;">{{c.Estado}}</td>
                                     <td style="font-size: 20px;" class="text-center"><a href="actualizarregistros/{{c.idregistrovehiculos}}" class="btn btn-primary btn-lg">Salida</a></td>
